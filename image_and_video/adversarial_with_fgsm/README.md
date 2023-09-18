@@ -1,6 +1,6 @@
 # An Adversarial Example
 
-Referenced from [official tutorial](https://pytorch.org/tutorials/beginner/fgsm_tutorial.html)
+Referenced from [official tutorial](https://pytorch.org/tutorials/beginner/fgsm_tutorial.html).
 
 ## Preliminary
 
