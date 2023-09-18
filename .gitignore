@@ -158,3 +158,11 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+
+image_and_video/object_detection_with_mask_rcnn/helper/*
+image_and_video/object_detection_with_mask_rcnn/PennFudanPed/*
+image_and_video/object_detection_with_mask_rcnn/tv-training-code.py
+
+image_and_video/adversarial_with_fgsm/checkpoints/*
+image_and_video/adversarial_with_fgsm/data/*
