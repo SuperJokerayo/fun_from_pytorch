@@ -11,7 +11,7 @@ import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
 
-import config.Config as c
+from config import Config as c
 
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -164,3 +164,6 @@ def main():
     plt.title("Fake Images")
     plt.imshow(np.transpose(img_list[-1],(1,2,0)))
     plt.show()
+
+if __name__ == "__main__":
+    main()
