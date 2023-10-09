@@ -6,11 +6,13 @@ from torchtext.datasets import WikiText2
 from torchtext.data.utils import get_tokenizer
 from torchtext.vocab import build_vocab_from_iterator
 
-from model import TransformerModel
+from transformer import TransformerModel
 
 import math
 
 from typing import Tuple
+
+import os
 
 def data_process(raw_text_iter: dataset.IterableDataset, vocab, tokenizer) -> Tensor:
     data = [torch.tensor(vocab(tokenizer(item)), dtype=torch.long) for item in raw_text_iter]
@@ -100,7 +102,7 @@ def main():
         total_loss = 0.
         with torch.no_grad():
             for i in range(0, eval_data.size(0) - 1, bptt):
-                data, targets = get_batch(eval_data, i)
+                data, targets = get_batch(eval_data, i, bptt)
                 seq_len = data.size(0)
                 output = model(data)
                 output_flat = output.view(-1, ntokens)
@@ -110,30 +112,31 @@ def main():
     best_val_loss = float('inf')
     epochs = 3
 
-    from tempfile import TemporaryDirectory
-    with TemporaryDirectory() as tempdir:
-        best_model_params_path = os.path.join(tempdir, "best_model_params.pt")
+    best_model_params_path = "checkpoints/best_model_params.pt"
 
-        for epoch in range(1, epochs + 1):
-            epoch_start_time = time.time()
-            train(model)
-            val_loss = evaluate(model, val_data)
-            val_ppl = math.exp(val_loss)
-            elapsed = time.time() - epoch_start_time
-            print('-' * 89)
-            print(f'| end of epoch {epoch:3d} | time: {elapsed:5.2f}s | '
-                f'valid loss {val_loss:5.2f} | valid ppl {val_ppl:8.2f}')
-            print('-' * 89)
+    for epoch in range(1, epochs + 1):
+        epoch_start_time = time.time()
+        train(model, epoch)
+        val_loss = evaluate(model, val_data)
+        val_ppl = math.exp(val_loss)
+        elapsed = time.time() - epoch_start_time
+        print('-' * 89)
+        print(f'| end of epoch {epoch:3d} | time: {elapsed:5.2f}s | '
+            f'valid loss {val_loss:5.2f} | valid ppl {val_ppl:8.2f}')
+        print('-' * 89)
 
-            if val_loss < best_val_loss:
-                best_val_loss = val_loss
-                torch.save(model.state_dict(), best_model_params_path)
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            torch.save(model.state_dict(), best_model_params_path)
 
-            scheduler.step()
-        model.load_state_dict(torch.load(best_model_params_path))
+        scheduler.step()
+    model.load_state_dict(torch.load(best_model_params_path))
     test_loss = evaluate(model, test_data)
     test_ppl = math.exp(test_loss)
     print('=' * 89)
     print(f'| End of training | test loss {test_loss:5.2f} | '
         f'test ppl {test_ppl:8.2f}')
     print('=' * 89)
+
+if __name__ == "__main__":
+    main()
