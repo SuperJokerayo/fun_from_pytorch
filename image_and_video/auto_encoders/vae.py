@@ -3,7 +3,7 @@ from time import time
 
 import torch
 import torch.nn as nn
-import torch.functional as F
+import torch.nn.functional as F
 
 from PIL import Image
 from torchvision import transforms
@@ -32,7 +32,7 @@ class CelebADataset(Dataset):
         return pipeline(img)
     
 
-def get_dataloader(root='data/celebA/img_align_celeba', **kwargs):
+def get_dataloader(root='./data/celebA/img_align_celeba', **kwargs):
     dataset = CelebADataset(root, **kwargs)
     return DataLoader(dataset, 16, shuffle=True)
 
@@ -169,16 +169,13 @@ def generate(device, model, idx):
     output = model.sample(device)
     output = output[0].detach().cpu()
     img = ToPILImage()(output)
-    img.save(f'generation/{idx}.jpg')
+    img.save(f'generation/vae/{idx}.jpg')
 
 def main():
     device = 'cuda:0'
     dataloader = get_dataloader()
 
     model = VAE().to(device)
-
-    # If you obtain the ckpt, load it
-    # model.load_state_dict(torch.load('dldemos/VAE/model.pth', 'cuda:0'))
 
     # Choose the function
     train(device, dataloader, model)
