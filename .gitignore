@@ -174,3 +174,6 @@ text/nlp_from_scratch/classify_names_with_character-level_RNN/data/*
 text/transformer_and_torchtext/checkpoints/*
 
 transformer_and_torchtext/checkpoints/*
+
+image_and_video/auto_encoders/checkpoints/*
+image_and_video/auto_encoders/generation/*
